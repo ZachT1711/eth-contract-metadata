@@ -1,40 +1,13 @@
-aliases:
-  - &install-node-dependencies
-      |
-        npm install
-
-defaults: &defaults
-  working_directory: ~/eth-contract-metadata
-
-version: 2
-jobs:
-  prep-deps:
-    <<: *defaults
-    docker:
-      - image: circleci/node:9
-    steps:
-      - checkout
-      - run: *install-node-dependencies
-      - persist_to_workspace:
-          root: .
-          paths:
-          - node_modules
-
-  test-unit:
-    <<: *defaults
-    docker:
-      - image: circleci/node:9
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run: npm test
-
+# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+# Use a package of configuration called an orb.
+orbs:
+  # Declare a dependency on the welcome-orb
+  welcome: circleci/welcome-orb@0.4.1
+# Orchestrate or schedule a set of jobs
 workflows:
-  version: 2
-  ful_test:
+  # Name the workflow "welcome"
+  welcome:
+    # Run the welcome/run job in its own container
     jobs:
-      - prep-deps
-      - test-unit:
-          requires:
-            - prep-deps
+      - welcome/run
